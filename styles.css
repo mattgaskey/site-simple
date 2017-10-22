@@ -22,7 +22,7 @@
 
   /* AVATAR */
   --size: 350px;
-  --circle: #ffab40;
+  --circle: var(--accent);
   --skin: bisque;
   --hair: #795548;
   --nose: burlywood;

@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import 'bulma.css';
+
+h1 {
+	font-size: 1.8em;
+}
+
+article {
+	max-width: 960px;
+	margin: 0 10%;
+	padding-bottom: 4em;
+}
+
+p {
+	font-size: 1.2em;
+}
+
+blockquote {
+	display: block;
+	background: lavender;
+	padding: 1em;
+	border-left: solid 3px #002b36;
+	font-style: italic;
+}
+
+pre > code {
+	padding: 2em !important;
+}
