@@ -2,7 +2,11 @@
 @import 'bulma.css';
 
 h1 {
-	font-size: 1.8em;
+	font-size: 3em;
+}
+
+h2 {
+	padding-top: 2em;
 }
 
 article {

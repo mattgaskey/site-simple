@@ -3,7 +3,8 @@
 ## The Back-Story
 
 I've been re-watching a lot of episodes of the classic Bob Ross painting series
-*The Joy of Painting* lately.  Maybe it's the stress and pressure of wanting
+[*The Joy of Painting*](https://www.youtube.com/user/BobRossInc
+) lately.  Maybe it's the stress and pressure of wanting
 to dive into web development at this stage in my life that makes me reach out
 for something calming at the end of the work day.  Maybe I'm just really into 
 happy little trees and clouds.
@@ -128,7 +129,7 @@ goal*)
 
 ## The Punch Line
 
-How on Earth could I have failed?  There must be somethign wrong with the
+How on Earth could I have failed?  There must have been something wrong with the
 testing module.  I mean, I did exactly what the task instructed me.  Click
 the '5', rotate all the others.  It does seem a bit inane of a task.  What's 
 the use in seeing a bunch of numbers spinning around in their little boxes
@@ -146,8 +147,7 @@ I'm supposed to shift the number grid clockwise around the '5' when it's clicked
 That's a much more daunting task.  How the hell am I supposed to do that? I guess,
 it's back to the proverbial drawing board.
 
-At this point, my immature self would have given up.  I did a task that required not-
-so-elementary knowledge, used NodeLists, applied listeners, wrote functions, updated 
+At this point, my immature self would have given up.  I did a task that required not-so-elementary knowledge, used NodeLists, applied listeners, wrote functions, updated 
 style with JavaScript; I even did it with ES6.  I think of Bob.  Bob says, "Don't be 
 immature. Remember, there are NO mistakes."
 
@@ -155,11 +155,11 @@ You're right Bob.  Let's figure this thing out.
 
 I've already gotten a long way.  I succeeded in targeting a change in all the buttons
 other than the one that is clicked.  I can use that.  The structure is there, I just
-need to redefine what the change the function is affecting.
+need to redefine what change the function is affecting.
 
 First things first, I can get rid of those nested spans.  They were only there to act
 as containers to spin the text (you cannot rotate inline elements, hence the 
-`display: block`).  I should also consider what needs to happen onClick.  The innerHTML
+`display: inline-block`).  I should also consider what needs to happen onClick.  The innerHTML
 of the surrounding elements needs to change, leaving the ids in tact.  That means I can't
 update the `button` elements themselves.  
 
@@ -185,18 +185,19 @@ gives us a new HTML markup:
 Our CSS is unchanged.  We're still working with simple buttons.
 
 The JS has to be the star of the show now.  Our buttons no longer have any text.  We've
-got to write a function to loop over the HTML element and set their innerText to the
+got to write a function to loop over the HTML elements and set their `textContent` to the
 initial values.  Plus we need an array of numbers to work from.
 
 ```
 // use 'let' to initialize the variable, we're going
-// to be updating it as we rotate
+// to be updating it as we rotate;
+// don't select btn5, it's value is
+// hard-coded in the HTML and won't change;
+// notice there is no '5' in the array either
+
 const numbers = [1, 2, 3, 4, 6, 7, 8, 9];
 const buttons = document.querySelectorAll('.rotating');
 
-// don't do anything to btn5, it's value is
-// hard-coded in the HTML and won't change;
-// notice there is no '5' in the array either
 function fillButtonContent(btn, i) {
   btn.textContent = numbers[i];
 }
@@ -210,7 +211,7 @@ a number from the array at each index `i` to the innerHTML.  This will give us
 the phone dial pad setup we're looking for.
 
 Next, we need to add our event listener and define our event handler, both of
-which we accomplished in our happly little accident before. This time, we'll need
+which we accomplished in our happy little accident before. This time, we'll need
 to look closer at what our handler is doing:
 
 ```
@@ -224,7 +225,7 @@ function rotateThem() {
 btn5.addEventListener('click', rotateThem);
 ```
 
-The mechanism is place; we just need to figure out how to properly manipulate
+The mechanism is in place; we just need to figure out how to properly manipulate
 our array so that the numbers move around the '5' in a clockwise fashion.  My first 
 thought was to simply pop the last value off the end of the array and move it to the
 front.  This does achieve a **cyclic** pattern, but since our HTML elements are arranged
@@ -256,8 +257,7 @@ After Second Click:
 ```
 
 I don't believe I can write a formula to model this pattern, but I can write a function!
-First, I need to see if the expected permutations have any kind of pattern when set 
-into our array.  That is, does each click result in the same kind of change in the array?
+First, I need to see if the expected permutations have any kind of pattern when we update our array.  That is, does each click result in the same kind of change in the array?
 
 Let's see:
 
@@ -329,8 +329,7 @@ btn5.addEventListener('click', rotateThem);
 
 On page load, the buttons which will rotate are assigned an innerHTML value
 from the numbers array. We target our `btn5` and attach a click listener 
-which fires the event handler `rotateThem`.  The event handler runs the 
-matrix function, which gives us a new array.  We use that array to run our
+which fires the event handler `rotateThem`.  The event handler runs `enterTheMatrix`, which gives us a new array.  We use that array to run our
 original `fillButtonContent` to update the button texts.
 
 And that's it!

@@ -9,7 +9,7 @@
 	<meta name="description" content="A blog post about turning stupid coding mistakes into smart solutions">
 	<meta name="keywords" content="JavaScript, front end development, HTML, CSS, functions, problem solving">
 	<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
-	<link rel="stylesheet" href="../../css/style.css" type="text/css">
+	<link rel="stylesheet" href="../../../style/blogpost.css" type="text/css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 	<script>hljs.initHighlightingOnLoad();</script>
@@ -19,7 +19,8 @@
 	  	<h1 id="happy-accidents"><strong>Happy Accidents</strong></h1>
 		<h2 id="the-back-story">The Back-Story</h2>
 		<p>I&#39;ve been re-watching a lot of episodes of the classic Bob Ross painting series
-		<em>The Joy of Painting</em> lately.  Maybe it&#39;s the stress and pressure of wanting
+		<a href="https://www.youtube.com/user/BobRossInc
+"><em>The Joy of Painting</em></a> lately.  Maybe it&#39;s the stress and pressure of wanting
 		to dive into web development at this stage in my life that makes me reach out
 		for something calming at the end of the work day.  Maybe I&#39;m just really into 
 		happy little trees and clouds.</p>
@@ -163,8 +164,7 @@ btn5.addEventListener('click', rotateThem);
 		<p>(<em>I did pass the CSS requirement, but that&#39;s small comfort when JS is the
 		goal</em>)</p>
 		<h2 id="the-punch-line">The Punch Line</h2>
-		<p>How on Earth could I have failed?  There must be somethign wrong with the
-		testing module.  I mean, I did exactly what the task instructed me.  Click
+		<p>How on Earth could I have failed?  There must have been something wrong with the testing module.  I mean, I did exactly what the task instructed me.  Click
 		the &#39;5&#39;, rotate all the others.  It does seem a bit inane of a task.  What&#39;s 
 		the use in seeing a bunch of numbers spinning around in their little boxes
 		anyway?</p>
@@ -177,17 +177,16 @@ btn5.addEventListener('click', rotateThem);
 		<p>I&#39;m supposed to shift the number grid clockwise around the &#39;5&#39; when it&#39;s clicked.
 		That&#39;s a much more daunting task.  How the hell am I supposed to do that? I guess,
 		it&#39;s back to the proverbial drawing board.</p>
-		<p>At this point, my immature self would have given up.  I did a task that required not-
-		so-elementary knowledge, used NodeLists, applied listeners, wrote functions, updated 
+		<p>At this point, my immature self would have given up.  I did a task that required not-so-elementary knowledge, used NodeLists, applied listeners, wrote functions, updated 
 		style with JavaScript; I even did it with ES6.  I think of Bob.  Bob says, &quot;Don&#39;t be 
 		immature. Remember, there are NO mistakes.&quot;</p>
 		<p>You&#39;re right Bob.  Let&#39;s figure this thing out.  </p>
 		<p>I&#39;ve already gotten a long way.  I succeeded in targeting a change in all the buttons
 		other than the one that is clicked.  I can use that.  The structure is there, I just
-		need to redefine what the change the function is affecting.</p>
+		need to redefine what change the function is affecting.</p>
 		<p>First things first, I can get rid of those nested spans.  They were only there to act
 		as containers to spin the text (you cannot rotate inline elements, hence the 
-		<code>display: block</code>).  I should also consider what needs to happen onClick.  The innerHTML
+		<code>display: inline-block</code>).  I should also consider what needs to happen onClick.  The innerHTML
 		of the surrounding elements needs to change, leaving the ids in tact.  That means I can&#39;t
 		update the <code>button</code> elements themselves.  </p>
 		<p>The best way to approach this is going to be by dynamically inserting the innerHTML of each 
@@ -209,17 +208,18 @@ btn5.addEventListener('click', rotateThem);
 		</code></pre>
 		<p>Our CSS is unchanged.  We&#39;re still working with simple buttons.</p>
 		<p>The JS has to be the star of the show now.  Our buttons no longer have any text.  We&#39;ve
-		got to write a function to loop over the HTML element and set their innerText to the
+		got to write a function to loop over the HTML elements and set their <code>textContent</code> to the
 		initial values.  Plus we need an array of numbers to work from.</p>
 		<pre><code>
 // use 'let' to initialize the variable, we're going
-// to be updating it as we rotate
+// to be updating it as we rotate;
+// don't select btn5, it's value is
+// hard-coded in the HTML and won't change;
+// notice there is no '5' in the array either
+
 const numbers = [1, 2, 3, 4, 6, 7, 8, 9];
 const buttons = document.querySelectorAll('.rotating');
 
-// don't do anything to btn5, it's value is
-// hard-coded in the HTML and won't change;
-// notice there is no '5' in the array either
 function fillButtonContent(btn, i) {
   btn.textContent = numbers[i];
 }
@@ -231,7 +231,7 @@ buttons.forEach((btn, i) =&gt; fillButtonContent(btn, i));
 		a number from the array at each index <code>i</code> to the innerHTML.  This will give us
 		the phone dial pad setup we&#39;re looking for.</p>
 		<p>Next, we need to add our event listener and define our event handler, both of
-		which we accomplished in our happly little accident before. This time, we&#39;ll need
+		which we accomplished in our happy little accident before. This time, we&#39;ll need
 		to look closer at what our handler is doing:</p>
 		<pre><code>
 const btn5 = document.querySelector('#btn5');
@@ -243,7 +243,7 @@ function rotateThem() {
 
 btn5.addEventListener('click', rotateThem);
 		</code></pre>
-		<p>The mechanism is place; we just need to figure out how to properly manipulate
+		<p>The mechanism is in place; we just need to figure out how to properly manipulate
 		our array so that the numbers move around the &#39;5&#39; in a clockwise fashion.  My first 
 		thought was to simply pop the last value off the end of the array and move it to the
 		front.  This does achieve a <strong>cyclic</strong> pattern, but since our HTML elements are arranged
@@ -271,8 +271,7 @@ After Second Click:
 | 9 | 6 | 3 |
 		</code></pre>
 		<p>I don&#39;t believe I can write a formula to model this pattern, but I can write a function!
-		First, I need to see if the expected permutations have any kind of pattern when set 
-		into our array.  That is, does each click result in the same kind of change in the array?</p>
+		First, I need to see if the expected permutations have any kind of pattern when we update our array.  That is, does each click result in the same kind of change in the array?</p>
 		<p>Let&#39;s see:</p>
 		<pre><code>
 numbers = [1, 2, 3, 4, 6, 7, 8, 9]
@@ -335,8 +334,7 @@ btn5.addEventListener('click', rotateThem);
 		</code></pre>
 		<p>On page load, the buttons which will rotate are assigned an innerHTML value
 		from the numbers array. We target our <code>btn5</code> and attach a click listener 
-		which fires the event handler <code>rotateThem</code>.  The event handler runs the 
-		matrix function, which gives us a new array.  We use that array to run our
+		which fires the event handler <code>rotateThem</code>.  The event handler runs <code>enterTheMatrix</code>, which gives us a new array.  We use that array to run our
 		original <code>fillButtonContent</code> to update the button texts.</p>
 		<p>And that&#39;s it!</p>
 		<p data-height="265" data-theme-id="0" data-slug-hash="GMLOqN" data-default-tab="result" data-user="mattgaskey" data-embed-version="2" data-pen-title="Happy Accident - Right" class="codepen">See the Pen <a href="https://codepen.io/mattgaskey/pen/GMLOqN/">Happy Accident - Right</a> by Matt Gaskey (<a href="https://codepen.io/mattgaskey">@mattgaskey</a>) on <a href="https://codepen.io">CodePen</a>.</p>
