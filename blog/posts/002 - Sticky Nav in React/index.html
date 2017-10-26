@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Sticky Nav in React</title>
+	<meta name="author" content="Matt Gaskey">
+	<meta name="description" content="A blog post about wrestling JavaScript functions into React Components">
+	<meta name="keywords" content="JavaScript, front end development, React, lifecycle, state, problem solving">
+	<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+	<link rel="stylesheet" href="../../../style/blogpost.css" type="text/css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+  </head>
+  <body>
+  	<article>
+  		<h1><a id="Sticky_Nav_in_React_0"></a>Sticky Nav in React</h1>
+<p>One of my main motivations for building this site is to familiarize myself with web technology, both new and old.  It gives me a chance to practice techniques for organizing my code and to be able to think about it both globally and locally.</p>
+<p>For this reason, I build a lot of things in multiple environments and with multiple frameworks.  As a production model, it’s quite inefficient, but for practice it’s invaluable.  I try to learn most things in vanilla JavaScript (or CSS or SVG) so I get the fundamentals down pat.  Plus, everything that is possible with a library is possible with a vanilla version.  Libraries are there to make things smoother for the build process, but in the end the browser has to interpret JS.</p>
+<h2><a id="Wax_On_Wax_Off_6"></a>Wax On, Wax Off</h2>
+<p>I am a firm believer in the power of Vanilla and try not to lean on libraries and frameworks.  Manipulating the DOM is one of the basic functions of JavaScript, and while libraries like jQuery remain popular, they are often <a href="http://youmightnotneedjquery.com/">not needed</a> to achieve simple DOM tasks.</p>
+<p>I recently followed one of Wes Bos’s (how on Earth does he do them for free?) courses: <a href="https://javascript30.com">JavaScript30</a>.  Through a series of 30 video lessons, you learn a lot of excellent techniques for efficient DOM manipulation.</p>
+<p>One of which is setting a so-called “sticky” navigation bar. If you haven’t heard the term, an element is sticky if it remains in view while scrolling.  Navigation bars are an exceptionally good candidate to sticky-ness as they provide the user site context and at-hand functionality even on long pages.</p>
+<p>I won’t outline the details of building the sticky nav here.  You should really take the course yourself. The basic idea goes something like this:</p>
+<ol>
+<li>Grab your <code>nav</code> element and set a <code>const</code> on the <code>offsetTop</code></li>
+<li>Add a scroll event listener to the <code>window</code></li>
+<li>Define the scroll event handler such that when <code>window.scrollY</code> is greater than <code>nav.offsetTop</code>, we add a class of <code>fixed-nav</code>.  We should also remove the class <code>window.scrollY</code> is less than or equal to <code>nav.offsetTop</code></li>
+<li>Define the <code>fixed-nav</code> class as <code>position: fixed</code> in our CSS</li>
+</ol>
+<p data-height="365" data-theme-id="0" data-slug-hash="BwXGML" data-default-tab="js,result" data-user="mattgaskey" data-embed-version="2" data-pen-title="Sticky Nav Vanilla" class="codepen">See the Pen <a href="https://codepen.io/mattgaskey/pen/BwXGML/">Sticky Nav Vanilla</a> by Matt Gaskey (<a href="https://codepen.io/mattgaskey">@mattgaskey</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<p>Aside from allowing for supplemntary padding if elements exist above the navbar, that’s pretty much it.</p>
+<h2><a id="Paint_the_Fence_27"></a>Paint the Fence</h2>
+<p>This is a pretty cool thing to have in your toolbelt.  Even cooler is to have it as a reusable component, one of the main reasons React is such a popular framework.  Building this site in React means only having to build each part once, then combining the components according to the needs of the page.</p>
+<p>But, since React is a framework, and frameworks are by definition opinionated, there are a few things we need to solve before we can just import the above code into a React component.</p>
+<p>Let’s take a look at what it takes to get the basic component built and rendering in our React app:</p>
+<p data-height="365" data-theme-id="0" data-slug-hash="pWMqOQ" data-default-tab="js,result" data-user="mattgaskey" data-embed-version="2" data-pen-title="Sticky Nav React First Step" class="codepen">See the Pen <a href="https://codepen.io/mattgaskey/pen/pWMqOQ/">Sticky Nav React First Step</a> by Matt Gaskey (<a href="https://codepen.io/mattgaskey">@mattgaskey</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<p>Simple enough; we’ve defined a React Component that returns the HTML elements that will be rendered to the DOM inside the <code>div id=&quot;app&quot;</code>.  So far so good. (I’ve add the content to the main HTML for simplicity’s sake.  Normally, this would be its own standalone component as well.)</p>
+<p>If we were going to stop there, it would probably be best just to write our Nav component as a <a href="https://reactjs.org/docs/components-and-props.html">Stateless Functional Component</a> rather than a Class Component.  However, we’re going to see that we have a few hurdles to overcome to integrate our sticky functionality.</p>
+<h2><a id="Sand_the_Floor_42"></a>Sand the Floor</h2>
+<p>One of the specificities of React is that components are encapsulated.  This provides security in that altering a component should not alter other components or the app as a whole.  But this also means that components do not have access to the DOM.</p>
+<p>We saw in our Vanilla example that the trigger for attaching our <code>fixed-nav</code> class to our <code>nav</code> is a scroll event listener, which needs to live on the <code>window</code>.  We also need to target our <code>nav</code> element in the DOM to add our class <code>onScroll</code>.</p>
+<p>One of the cool things about the React <code>render()</code> method is that we can write Vanilla JavaScript right inside.  We are <code>return</code>ing the HTML, so why not add our JS before the <code>return</code>?</p>
+<p>Well, drop the first line from our Vanilla example into our component and <code>console.log</code> it.  The result is <code>null</code>.  We can’t access the DOM from the <code>render()</code> method.</p>
+<p>We can attach the event listener to the <code>window</code> inside the <code>render()</code> method, set a variable to hold our class name and try to have the <code>nav</code> element’s <code>className</code> set dynamically.  Unfortunately, while we can do all these things, they don’t achieve the result we are looking for.  The scroll event is tracked and we can run a function that updates the class name, but our <code>nav</code> isn’t receiving anything new.</p>
+<p data-height="365" data-theme-id="0" data-slug-hash="ZXgwpE" data-default-tab="js,result" data-user="mattgaskey" data-embed-version="2" data-pen-title="Sticky Nav React Second Step" class="codepen">See the Pen <a href="https://codepen.io/mattgaskey/pen/ZXgwpE/">Sticky Nav React Second Step</a> by Matt Gaskey (<a href="https://codepen.io/mattgaskey">@mattgaskey</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<p>The problem is that React components got through a number of stages in their lifecycle.  To access components in the DOM and re-render them based on changes in their environment, React makes use of <a href="https://reactjs.org/docs/state-and-lifecycle.html">State and Lifecycle Hooks</a>.</p>
+<p>State allows us to hold a data store for the App, or locally for Components. (Deciding where state should “live” is one of the nuances of building with React and is beyond the scope of this post.) Lifecycle hooks allow us to access components before, during or after rendering or re-rendering (in a nutshell).</p>
+<h2><a id="Sweep_the_leg_61"></a>Sweep the leg</h2>
+<p>We are going to make use of both local state and lifecycle hooks to set up our sticky nav component.  This is why we need our Nav component as a class instead of a plain function.  React classes allow us to assign local state and to access the lifecycle hooks.</p>
+<p>I’m going to initiate <code>this.state</code> as an empty object.  We’ll be updating this once we know for sure that the Nav component has been rendered to the DOM.  How do we know this?</p>
+<p>That’s where the lifecycle hook <code>componentDidMount()</code> comes in.  For simplicity’s sake, it’s here that I’m going to do most of the heavy lifting from our Vanilla JS example.  I’ll target the <code>nav</code> element in the DOM, attach the scroll event listener to the <code>window</code> and store the <code>offsetTop</code> and <code>offsetHeight</code> of the navbar in the <code>state</code> object.</p>
+<p>I’ve also written <code>handleScroll</code> as function that stores the <code>scrollY</code> poisition in the <code>state</code> object when called.  Here, we’ll also handle our offset body padding to account for any content that might come before our navigation.<strong>*</strong>  (Notice the odd-looking call to <code>.bind()</code> inside the <code>constructor()</code> method.  This will allow us to preserve the meaning of <code>this</code> when we call our handler function in other parts of our component.)</p>
+<p>We are pretty much there with our sticky nav.  The only thing left to do is somehow toggle the class name <code>fixed-nav</code> on and off.  In Vanilla JS, our handler function could do that.  However, in React, there’s not really a way to handle toggles without leveraging state.  Luckily, since we are essentially writing our HTML elements with JavaScript, we can put our class name logic directly into our HTML element.</p>
+<p>Though it might seem counterintuitive, this is really excercising one of the more powerful aspects of React.  Even though we are using JavaScript to write HTML, we are preserving a separation of concerns.  The state is kept out of the DOM, and DOM elements can be rendered and re-rendered (including their attributes) based on changes to that state, which are handled with pure functions.  It really is quite elegant.</p>
+<p>Coming back to the toggle, we can use a ternary operator to check the <code>window</code> scroll position against the top of our <code>nav</code> element, and apply the class name accordingly. This logic could also be placed in the event handler itself to either return the class name we need (in which case we assign the function call to the <code>className</code> property) or to set the class name to the state object (in which case we assign <code>this.state.classname</code> to the <code>className</code> property).</p>
+<p><strong>*</strong><em>We can also place this functionality into another lifecycle hook, <code>componentDidUpdate()</code>.  Since the state is constantly updating on scroll, this hook will allow us check the location of the <code>nav</code> while scrolling and update the padding as needed.</em></p>
+<p data-height="365" data-theme-id="0" data-slug-hash="gGVEzb" data-default-tab="js,result" data-user="mattgaskey" data-embed-version="2" data-pen-title="Sticky Nav React Final Step" class="codepen">See the Pen <a href="https://codepen.io/mattgaskey/pen/gGVEzb/">Sticky Nav React Final Step</a> by Matt Gaskey (<a href="https://codepen.io/mattgaskey">@mattgaskey</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<h2><a id="Takedown_83"></a>Takedown</h2>
+<p>React components can be a bit daunting when coming from a Vanilla JavaScript world, but they have a solid foundation in modular component structure.  They help us preserve a separation of concerns while allowing for flexiblity and discouraging redundancy in building web apps.</p>
+<p>While it may take a bit more wrangling to get basic functionality like DOM manipulation to work properly inside of the React sphere, it shouldn’t be seen as a hindrance. And of course, it should go without saying that not all projects are right for React or require the level of complexity React brings to the table.</p>
+<p>Whether or not frameworks like React or Angular will take over the Web remains to be seen.  But if they do, I’ll be ready to apply my Vanilla knowledge upwards!</p>
+  	</article>
+  </body>
+</html>
